@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#25507A">
+<title>Corretor de provas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icone-192.png">
+<link rel="apple-touch-icon" href="icone-apple.png">
+<meta name="mobile-web-app-capable" content="yes">
+<style id="estilo">
+:root{--bg:#E9EDF1;--card:#fff;--ink:#18212B;--mut:#6A7581;--line:#D2D9E0;--ac:#25507A;--ok:#1E7A55;--okb:#E3F2EA;--bad:#C33A2E;--badb:#FBE7E4;--wr:#9A6100;--wrb:#FBF0DC}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-text-size-adjust:100%}
+#app{max-width:620px;margin:0 auto;padding:14px 14px 90px}
+h1.t{font-size:20px;margin:0;letter-spacing:-.3px}
+p.sub{font-size:13px;color:var(--mut);margin:4px 0 14px}
+#abas{display:flex;gap:6px;margin-bottom:16px}
+.tab{flex:1;padding:9px 4px;font-size:14px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.tab.on{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px}
+.card.atencao{border-color:var(--wr)}
+.card.semp{padding:0;overflow:hidden}
+.grade2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.campo{display:block;margin-bottom:12px}
+.campo span{display:block;font-size:13px;color:var(--mut);margin-bottom:4px}
+input,select,textarea{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font-family:inherit}
+textarea{resize:vertical}
+.dica{font-size:13px;color:var(--mut);margin:6px 0 12px}
+.dica.pq,.aviso.pq{font-size:12px}
+.aviso{color:var(--wr)}.ok{color:var(--ok)}.alerta{background:var(--wrb);color:var(--wr);padding:10px;border-radius:8px;font-size:13px;margin:0 0 12px}
+.sep{border-top:1px solid var(--line);padding-top:14px}
+.linha{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;font-size:13px}
+.botoes1{display:flex;flex-direction:column;gap:8px}
+.botoes2{display:flex;gap:8px}
+.b1,.b2,.b3{padding:12px 14px;font-size:15px;font-weight:600;border-radius:10px;border:1px solid transparent;cursor:pointer;width:100%;font-family:inherit}
+.b1{background:var(--ac);color:#fff}
+.b2{background:#fff;color:var(--ink);border-color:var(--line)}
+.b3{background:#fff;color:var(--bad);border-color:var(--badb)}
+button[disabled]{opacity:.45}
+.gab{display:flex;flex-direction:column;gap:6px}
+.glinha{display:flex;align-items:center;gap:6px}
+.gn{width:24px;font-size:13px;color:var(--mut);font-variant-numeric:tabular-nums}
+.alt{flex:1;padding:8px 0;font-size:14px;font-weight:600;border-radius:7px;border:1px solid var(--line);background:#fff;color:var(--mut);cursor:pointer}
+.alt.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.anu{width:34px;padding:8px 0;font-size:12px;border-radius:7px;border:1px solid var(--line);background:#fff;color:var(--mut);cursor:pointer}
+.anu.on{background:var(--wrb);border-color:var(--wr);color:var(--wr)}
+.topo{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.nomein{font-weight:600}
+.nota{text-align:right;min-width:66px}
+.nota b{font-size:20px;display:block;line-height:1}
+.nota span{font-size:11px;color:var(--mut)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{width:40px;padding:5px 0;border-radius:7px;border:1px solid;cursor:pointer;font-size:14px;font-weight:700;line-height:1.15;font-family:inherit}
+.chip span{display:block;font-size:9px;opacity:.75;font-weight:400}
+.chip.certo{background:var(--okb);border-color:var(--ok);color:var(--ok)}
+.chip.errado{background:var(--badb);border-color:var(--bad);color:var(--bad)}
+.chip.anulada{background:var(--wrb);border-color:var(--wr);color:var(--wr)}
+.rem{margin-top:10px;background:none;border:none;color:var(--bad);font-size:13px;cursor:pointer;padding:0;font-family:inherit}
+.lista{list-style:none;padding:0;margin:12px 0 0;font-size:14px}
+.lista li{padding:7px 0;border-top:1px solid var(--line)}
+.lista b{color:var(--mut);font-variant-numeric:tabular-nums;margin-right:8px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{background:#F4F6F8;font-size:12px;color:var(--mut);text-align:left;padding:10px 12px}
+td{padding:10px 12px;border-top:1px solid var(--line)}
+.d{text-align:right}.cinza{color:var(--mut)}
+.vazio{text-align:center;color:var(--mut);font-size:14px;padding:24px 8px}
+.stats{display:flex;gap:8px;padding:12px}
+.stat{flex:1;text-align:center}
+.stat b{display:block;font-size:18px}
+.stat span{font-size:11px;color:var(--mut)}
+#barrainstalar{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--ac);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+#barrainstalar>div{flex:1}
+#barrainstalar b{display:block;font-size:14px}
+#barrainstalar span{font-size:12px;color:var(--mut)}
+#barrainstalar button{width:auto;padding:10px 18px}
+#rodape{font-size:12px;color:var(--mut);text-align:center;margin-top:18px;line-height:1.5}
+#impressao{display:none}
+@media print{
+  @page{size:A4;margin:0}
+  #app{display:none}
+  #impressao{display:block}
+  body{background:#fff}
+}
+.folha{width:210mm;height:297mm;position:relative;page-break-after:always;background:#fff;overflow:hidden}
+.area{position:absolute;left:20mm;top:26mm;width:170mm;height:245mm}
+.area>div{position:absolute}
+.marca{background:#000}
+.ancora{background:#000;border-radius:50%}
+.bo{border:0.3mm solid #8a8a8a;border-radius:50%;font-size:2.6mm;line-height:4.6mm;text-align:center;color:#b0b0b0}
+.bo.cheia{background:#111;color:#111}
+.tx{font-family:Arial,Helvetica,sans-serif;font-size:3mm;color:#222;white-space:nowrap}
+.tx.tit{font-size:4.6mm;font-weight:700;letter-spacing:.4mm}
+.tx.nome{font-size:3.6mm}
+.tx.pq{font-size:2.4mm;color:#666}
+.tx.qn{font-size:2.8mm;color:#555;width:9mm;text-align:right}
+.planilha{padding:18mm 16mm;font-family:Arial,Helvetica,sans-serif}
+.planilha h1{font-size:16pt;margin:0 0 4pt}
+.planilha .cab{font-size:9pt;color:#555;margin:0 0 10pt}
+.planilha table{font-size:10pt}
+.planilha th,.planilha td{border-bottom:.3mm solid #bbb;padding:4pt 6pt;background:none}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="barrainstalar" hidden>
+    <div><b>Instalar no celular</b><span>Vira atalho na tela inicial e funciona sem internet.</span></div>
+    <button class="b1" id="b_instalar">Instalar</button>
+  </div>
+  <h1 class="t">Corretor de provas</h1>
+  <p class="sub">Leitura das marcações no próprio aparelho. Sem internet, sem conta, sem custo.</p>
+  <div id="abas"></div>
+  <div id="conteudo"></div>
+  <input id="in_gab" type="file" accept="image/*" hidden>
+  <input id="in_cam" type="file" accept="image/*" capture="environment" hidden>
+  <input id="in_gal" type="file" accept="image/*" multiple hidden>
+  <div id="rodape">Corretor de provas &middot; professor Breno Reis<br>A leitura acontece no seu aparelho: nenhuma foto sai do celular.</div>
+</div>
+<div id="impressao"></div>
+<script>
+/* ==================================================================
+   OMR — leitura óptica do cartão-resposta, 100% local.
+   Coordenadas do gabarito em milímetros, com origem no CENTRO da
+   marca superior esquerda. As 4 marcas pretas definem o retângulo.
+   ================================================================== */
+
+var GEO = {
+  W: 170,            // distância horizontal entre centros das marcas
+  H: 245,            // distância vertical
+  marca: 9,          // lado do quadrado preto (mm)
+  raio: 2.3,         // raio da bolha impressa
+  raioAmostra: 1.5,  // raio amostrado na leitura
+
+  numY: [17, 25.5],  // linhas dezena / unidade
+  numX0: 46,
+  numDX: 8.4,
+
+  gabX: 150,         // bolha "GABARITO"
+  gabY: 17,
+
+  ancoraX: 5,        // ponto preto impresso: revela folha de cabeça para baixo
+  ancoraY: 41,
+  ancoraR: 1.8,
+
+  qY0: 46,
+  qDY: 7.6,
+  qPorColuna: 25,
+  qColX: [4, 60, 116],
+  qBolhaDX0: 13,
+  qDX: 8.0,
+};
+
+function posQuestao(i, alternativa) {
+  var col = Math.floor(i / GEO.qPorColuna);
+  var lin = i % GEO.qPorColuna;
+  return {
+    x: GEO.qColX[col] + GEO.qBolhaDX0 + alternativa * GEO.qDX,
+    y: GEO.qY0 + lin * GEO.qDY,
+  };
+}
+function posNumero(digito, valor) {
+  return { x: GEO.numX0 + valor * GEO.numDX, y: GEO.numY[digito] };
+}
+
+/* ---------- cinza + Otsu ---------- */
+function paraCinza(dados, larg, alt) {
+  var g = new Uint8Array(larg * alt);
+  for (var i = 0, j = 0; i < g.length; i++, j += 4) {
+    g[i] = (dados[j] * 299 + dados[j + 1] * 587 + dados[j + 2] * 114) / 1000;
+  }
+  return g;
+}
+
+function reduzir(g, larg, alt, larguraAlvo) {
+  var passo = Math.max(1, Math.round(larg / larguraAlvo));
+  if (passo === 1) return { g: g, w: larg, h: alt, passo: 1 };
+  var w = Math.floor(larg / passo), h = Math.floor(alt / passo);
+  var out = new Uint8Array(w * h);
+  for (var y = 0; y < h; y++) {
+    for (var x = 0; x < w; x++) {
+      var s = 0, n = 0;
+      for (var dy = 0; dy < passo; dy++)
+        for (var dx = 0; dx < passo; dx++) { s += g[(y * passo + dy) * larg + (x * passo + dx)]; n++; }
+      out[y * w + x] = s / n;
+    }
+  }
+  return { g: out, w: w, h: h, passo: passo };
+}
+
+function otsu(g) {
+  var hist = new Array(256).fill(0), i;
+  for (i = 0; i < g.length; i++) hist[g[i]]++;
+  var total = g.length, soma = 0;
+  for (i = 0; i < 256; i++) soma += i * hist[i];
+  var somaB = 0, wB = 0, melhor = 0, limiar = 128;
+  for (i = 0; i < 256; i++) {
+    wB += hist[i];
+    if (!wB) continue;
+    var wF = total - wB;
+    if (!wF) break;
+    somaB += i * hist[i];
+    var mB = somaB / wB, mF = (soma - somaB) / wF;
+    var v = wB * wF * (mB - mF) * (mB - mF);
+    if (v > melhor) { melhor = v; limiar = i; }
+  }
+  return limiar;
+}
+
+/* ---------- componentes conexos escuros ---------- */
+function componentes(g, w, h, limiar) {
+  var visto = new Uint8Array(w * h), lista = [], pilha = new Int32Array(w * h);
+  for (var p0 = 0; p0 < w * h; p0++) {
+    if (visto[p0] || g[p0] > limiar) continue;
+    var topo = 0, area = 0, x0 = 1e9, x1 = -1, y0 = 1e9, y1 = -1, sx = 0, sy = 0;
+    pilha[topo++] = p0; visto[p0] = 1;
+    while (topo > 0) {
+      var p = pilha[--topo];
+      var y = (p / w) | 0, x = p - y * w;
+      area++; sx += x; sy += y;
+      if (x < x0) x0 = x; if (x > x1) x1 = x;
+      if (y < y0) y0 = y; if (y > y1) y1 = y;
+      if (x > 0 && !visto[p - 1] && g[p - 1] <= limiar) { visto[p - 1] = 1; pilha[topo++] = p - 1; }
+      if (x < w - 1 && !visto[p + 1] && g[p + 1] <= limiar) { visto[p + 1] = 1; pilha[topo++] = p + 1; }
+      if (y > 0 && !visto[p - w] && g[p - w] <= limiar) { visto[p - w] = 1; pilha[topo++] = p - w; }
+      if (y < h - 1 && !visto[p + w] && g[p + w] <= limiar) { visto[p + w] = 1; pilha[topo++] = p + w; }
+    }
+    lista.push({ area: area, x0: x0, x1: x1, y0: y0, y1: y1, cx: sx / area, cy: sy / area });
+  }
+  return lista;
+}
+
+function acharMarcas(g, w, h) {
+  var limiar = Math.min(otsu(g), 170);
+  var comps = componentes(g, w, h, limiar);
+  var areaImg = w * h;
+  var cand = comps.filter(function (c) {
+    var bw = c.x1 - c.x0 + 1, bh = c.y1 - c.y0 + 1;
+    var prop = bw / bh, dens = c.area / (bw * bh);
+    return c.area > areaImg * 0.00015 && c.area < areaImg * 0.02 &&
+           prop > 0.6 && prop < 1.7 && dens > 0.72 && bw > 6 && bh > 6;
+  });
+  if (cand.length < 4) return null;
+
+  function extremo(f) {
+    var melhor = cand[0], v = f(cand[0]);
+    for (var i = 1; i < cand.length; i++) { var t = f(cand[i]); if (t < v) { v = t; melhor = cand[i]; } }
+    return melhor;
+  }
+  var se = extremo(function (c) { return c.cx + c.cy; });                 // superior esquerda
+  var sd = extremo(function (c) { return (w - c.cx) + c.cy; });           // superior direita
+  var ie = extremo(function (c) { return c.cx + (h - c.cy); });           // inferior esquerda
+  var id = extremo(function (c) { return (w - c.cx) + (h - c.cy); });     // inferior direita
+
+  var m = [se, sd, id, ie];
+  for (var i = 0; i < 4; i++)
+    for (var j = i + 1; j < 4; j++)
+      if (m[i] === m[j]) return null;
+
+  var ladoSup = Math.hypot(sd.cx - se.cx, sd.cy - se.cy);
+  var ladoEsq = Math.hypot(ie.cx - se.cx, ie.cy - se.cy);
+  if (ladoSup < w * 0.35 || ladoEsq < h * 0.35) return null;
+  var esperado = GEO.W / GEO.H, obtido = ladoSup / ladoEsq;
+  if (obtido < esperado * 0.65 || obtido > esperado * 1.5) return null;
+
+  return { se: se, sd: sd, id: id, ie: ie, brilhoMarca: null };
+}
+
+/* ---------- homografia (mm -> pixel) ---------- */
+function homografia(orig, dest) {
+  var A = [], b = [], i;
+  for (i = 0; i < 4; i++) {
+    var u = orig[i][0], v = orig[i][1], x = dest[i][0], y = dest[i][1];
+    A.push([u, v, 1, 0, 0, 0, -u * x, -v * x]); b.push(x);
+    A.push([0, 0, 0, u, v, 1, -u * y, -v * y]); b.push(y);
+  }
+  for (i = 0; i < 8; i++) {
+    var piv = i;
+    for (var r = i + 1; r < 8; r++) if (Math.abs(A[r][i]) > Math.abs(A[piv][i])) piv = r;
+    var tA = A[i]; A[i] = A[piv]; A[piv] = tA;
+    var tb = b[i]; b[i] = b[piv]; b[piv] = tb;
+    if (Math.abs(A[i][i]) < 1e-9) return null;
+    for (var r2 = i + 1; r2 < 8; r2++) {
+      var f = A[r2][i] / A[i][i];
+      for (var c = i; c < 8; c++) A[r2][c] -= f * A[i][c];
+      b[r2] -= f * b[i];
+    }
+  }
+  var s = new Array(8);
+  for (i = 7; i >= 0; i--) {
+    var acc = b[i];
+    for (var c2 = i + 1; c2 < 8; c2++) acc -= A[i][c2] * s[c2];
+    s[i] = acc / A[i][i];
+  }
+  return s;
+}
+function aplicar(hm, u, v) {
+  var d = hm[6] * u + hm[7] * v + 1;
+  return [(hm[0] * u + hm[1] * v + hm[2]) / d, (hm[3] * u + hm[4] * v + hm[5]) / d];
+}
+
+/* ---------- amostragem ---------- */
+function escalaPx(hm) {
+  var a = aplicar(hm, 0, 0), b = aplicar(hm, 10, 0), c = aplicar(hm, 0, 10);
+  return (Math.hypot(b[0] - a[0], b[1] - a[1]) + Math.hypot(c[0] - a[0], c[1] - a[1])) / 20;
+}
+
+function mediaDisco(g, w, h, cx, cy, r) {
+  var s = 0, n = 0, r2 = r * r;
+  var x0 = Math.max(0, Math.floor(cx - r)), x1 = Math.min(w - 1, Math.ceil(cx + r));
+  var y0 = Math.max(0, Math.floor(cy - r)), y1 = Math.min(h - 1, Math.ceil(cy + r));
+  for (var y = y0; y <= y1; y++)
+    for (var x = x0; x <= x1; x++) {
+      var dx = x - cx, dy = y - cy;
+      if (dx * dx + dy * dy <= r2) { s += g[y * w + x]; n++; }
+    }
+  return n ? s / n : 255;
+}
+
+function mediaAnel(g, w, h, cx, cy, r1, r2) {
+  var s = 0, n = 0, a1 = r1 * r1, a2 = r2 * r2;
+  var x0 = Math.max(0, Math.floor(cx - r2)), x1 = Math.min(w - 1, Math.ceil(cx + r2));
+  var y0 = Math.max(0, Math.floor(cy - r2)), y1 = Math.min(h - 1, Math.ceil(cy + r2));
+  for (var y = y0; y <= y1; y++)
+    for (var x = x0; x <= x1; x++) {
+      var dx = x - cx, dy = y - cy, d = dx * dx + dy * dy;
+      if (d >= a1 && d <= a2) { s += g[y * w + x]; n++; }
+    }
+  return n ? s / n : 255;
+}
+
+function papelBranco(g, w, h, hm) {
+  var amostras = [];
+  for (var i = 0; i <= 10; i++)
+    for (var j = 0; j <= 10; j++) {
+      var p = aplicar(hm, 6 + (i * (GEO.W - 12)) / 10, 34 + (j * (GEO.H - 44)) / 10);
+      var x = Math.round(p[0]), y = Math.round(p[1]);
+      if (x >= 0 && y >= 0 && x < w && y < h) amostras.push(g[y * w + x]);
+    }
+  amostras.sort(function (a, b) { return a - b; });
+  return amostras.length ? amostras[Math.floor(amostras.length * 0.85)] : 230;
+}
+
+/* ---------- leitura ---------- */
+function lerCartao(dados, larg, alt, opcoes) {
+  var alternativas = opcoes.alternativas || 5;
+  var questoes = opcoes.questoes || 10;
+
+  var g = paraCinza(dados, larg, alt);
+  var red = reduzir(g, larg, alt, 900);
+  var marcas = acharMarcas(red.g, red.w, red.h);
+  if (!marcas) return { ok: false, erro: "marcas" };
+
+  var k = red.passo;
+  var dest = [
+    [marcas.se.cx * k, marcas.se.cy * k],
+    [marcas.sd.cx * k, marcas.sd.cy * k],
+    [marcas.id.cx * k, marcas.id.cy * k],
+    [marcas.ie.cx * k, marcas.ie.cy * k],
+  ];
+  var canto = [[0, 0], [GEO.W, 0], [GEO.W, GEO.H], [0, GEO.H]];
+  var hm = homografia(canto, dest);
+  if (!hm) return { ok: false, erro: "homografia" };
+
+  // folha girada 180°? a âncora impressa tem que estar no canto de cima.
+  var escA = escalaPx(hm);
+  var rA = Math.max(1.5, GEO.ancoraR * 0.75 * escA);
+  function contraste(mx, my) {
+    var p = aplicar(hm, mx, my);
+    var dentro = mediaDisco(g, larg, alt, p[0], p[1], rA);
+    var fora = mediaAnel(g, larg, alt, p[0], p[1], rA * 2.0, rA * 3.4);
+    return fora - dentro; // imune a sombra: compara com o papel ao lado
+  }
+  var cA = contraste(GEO.ancoraX, GEO.ancoraY);
+  var cB = contraste(GEO.W - GEO.ancoraX, GEO.H - GEO.ancoraY);
+  if (cB > 45 && cB > cA + 30) {
+    hm = homografia(canto, [dest[2], dest[3], dest[0], dest[1]]);
+    if (!hm) return { ok: false, erro: "homografia" };
+  }
+
+  var esc = escalaPx(hm);
+  var rAm = Math.max(1.5, GEO.raioAmostra * esc);
+  var branco = papelBranco(g, larg, alt, hm);
+  var preto = 0;
+  var pm = aplicar(hm, 0, 0);
+  preto = mediaDisco(g, larg, alt, pm[0], pm[1], Math.max(1.5, esc * 2));
+  var faixa = Math.max(30, branco - preto);
+
+  function escuridao(mmx, mmy) {
+    var p = aplicar(hm, mmx, mmy);
+    var m = mediaDisco(g, larg, alt, p[0], p[1], rAm);
+    return Math.min(1, Math.max(0, (branco - m) / faixa));
+  }
+
+  function escolher(lista, minimo, folga) {
+    var i1 = -1, v1 = -1, v2 = -1;
+    for (var i = 0; i < lista.length; i++) {
+      if (lista[i] > v1) { v2 = v1; v1 = lista[i]; i1 = i; }
+      else if (lista[i] > v2) v2 = lista[i];
+    }
+    if (v1 < minimo) return { idx: -1, motivo: "vazio" };
+    if (v1 - v2 < folga) return { idx: -1, motivo: "duplo" };
+    return { idx: i1, motivo: "" };
+  }
+
+  /* bolha GABARITO */
+  var ehGabarito = escuridao(GEO.gabX, GEO.gabY) > 0.5;
+
+  /* número do aluno */
+  var numero = null, digitos = [];
+  for (var d = 0; d < 2; d++) {
+    var vals = [];
+    for (var v = 0; v < 10; v++) { var pn = posNumero(d, v); vals.push(escuridao(pn.x, pn.y)); }
+    digitos.push(escolher(vals, 0.42, 0.12));
+  }
+  if (digitos[0].idx >= 0 && digitos[1].idx >= 0) numero = digitos[0].idx * 10 + digitos[1].idx;
+
+  /* respostas */
+  var respostas = [], duvidas = 0;
+  for (var q = 0; q < questoes; q++) {
+    var linha = [];
+    for (var a = 0; a < alternativas; a++) { var pq = posQuestao(q, a); linha.push(escuridao(pq.x, pq.y)); }
+    var r = escolher(linha, 0.42, 0.12);
+    if (r.idx < 0) duvidas++;
+    respostas.push(r.idx < 0 ? "-" : "ABCDE"[r.idx]);
+  }
+
+  return { ok: true, numero: numero, ehGabarito: ehGabarito, respostas: respostas, duvidas: duvidas };
+}
+
+
+</script>
+<script>
+/* ================= estado ================= */
+var LETRAS = "ABCDE";
+var hoje = function () { return new Date().toISOString().slice(0, 10); };
+var uid = function () { return Math.random().toString(36).slice(2, 9); };
+
+var S = {
+  cfg: { disciplina: "", turma: "", data: hoje(), valor: 10, questoes: 10, alternativas: 5, gabarito: [], anuladas: [] },
+  alunos: [],
+  provas: [],
+};
+S.cfg.gabarito = new Array(10).fill("");
+
+var mem = {};
+function salvar() {
+  var txt = JSON.stringify(S);
+  try { localStorage.setItem("corretor:v2", txt); } catch (e) { mem.d = txt; }
+}
+function carregar() {
+  var txt = null;
+  try { txt = localStorage.getItem("corretor:v2"); } catch (e) { txt = mem.d; }
+  if (!txt) return;
+  try {
+    var d = JSON.parse(txt);
+    if (d.cfg) S.cfg = Object.assign(S.cfg, d.cfg);
+    if (d.alunos) S.alunos = d.alunos;
+    if (d.provas) S.provas = d.provas;
+  } catch (e) {}
+}
+
+/* ================= correção ================= */
+function valorQuestao() { return S.cfg.questoes > 0 ? S.cfg.valor / S.cfg.questoes : 0; }
+
+function corrigir(respostas) {
+  var acertos = 0, detalhe = [];
+  for (var i = 0; i < S.cfg.questoes; i++) {
+    var anulada = S.cfg.anuladas.indexOf(i) >= 0;
+    var certo = anulada || (respostas[i] && respostas[i] === S.cfg.gabarito[i]);
+    if (certo) acertos++;
+    detalhe.push(anulada ? "anulada" : certo ? "certo" : "errado");
+  }
+  return { acertos: acertos, nota: Math.round(acertos * valorQuestao() * 100) / 100, detalhe: detalhe };
+}
+function num(n) { return n.toFixed(2).replace(".", ","); }
+
+/* ================= foto ================= */
+async function carregarImagem(file) {
+  if (window.createImageBitmap) {
+    try { return await createImageBitmap(file, { imageOrientation: "from-image" }); } catch (e) {}
+    try { return await createImageBitmap(file); } catch (e) {}
+  }
+  return await new Promise(function (res, rej) {
+    var img = new Image(), url = URL.createObjectURL(file);
+    img.onload = function () { URL.revokeObjectURL(url); res(img); };
+    img.onerror = function () { rej(new Error("imagem inválida")); };
+    img.src = url;
+  });
+}
+
+async function lerFoto(file) {
+  var bmp = await carregarImagem(file);
+  var w = bmp.width || bmp.naturalWidth, h = bmp.height || bmp.naturalHeight;
+  var esc = Math.min(1, 1600 / Math.max(w, h));
+  var c = document.createElement("canvas");
+  c.width = Math.round(w * esc); c.height = Math.round(h * esc);
+  var ctx = c.getContext("2d", { willReadFrequently: true });
+  ctx.drawImage(bmp, 0, 0, c.width, c.height);
+  var dados = ctx.getImageData(0, 0, c.width, c.height);
+  return lerCartao(dados.data, c.width, c.height, { questoes: S.cfg.questoes, alternativas: S.cfg.alternativas });
+}
+
+/* ================= folhas para impressão ================= */
+function bolhaHTML(x, y, cheia, letra) {
+  var r = GEO.raio;
+  return '<div class="bo' + (cheia ? " cheia" : "") + '" style="left:' + (x - r) + "mm;top:" + (y - r) +
+    "mm;width:" + 2 * r + "mm;height:" + 2 * r + 'mm">' + (letra || "") + "</div>";
+}
+
+function folhaHTML(op) {
+  var cfg = S.cfg, h = "", i, v, d;
+  h += '<div class="folha"><div class="area">';
+  ["0,0", GEO.W + ",0", GEO.W + "," + GEO.H, "0," + GEO.H].forEach(function (p) {
+    var xy = p.split(",");
+    h += '<div class="marca" style="left:' + (+xy[0] - GEO.marca / 2) + "mm;top:" + (+xy[1] - GEO.marca / 2) +
+      "mm;width:" + GEO.marca + "mm;height:" + GEO.marca + 'mm"></div>';
+  });
+  h += '<div class="ancora" style="left:' + (GEO.ancoraX - GEO.ancoraR) + "mm;top:" + (GEO.ancoraY - GEO.ancoraR) +
+    "mm;width:" + 2 * GEO.ancoraR + "mm;height:" + 2 * GEO.ancoraR + 'mm"></div>';
+
+  h += '<div class="tx tit" style="left:6mm;top:1mm">CARTÃO-RESPOSTA</div>';
+  h += '<div class="tx" style="left:6mm;top:6mm">' +
+    [cfg.disciplina, cfg.turma ? "Turma " + cfg.turma : "", cfg.data ? cfg.data.split("-").reverse().join("/") : "",
+     "Valor " + num(cfg.valor)].filter(Boolean).join(" &nbsp;·&nbsp; ") + "</div>";
+
+  h += '<div class="tx" style="left:6mm;top:' + (GEO.numY[0] - 3) + 'mm">ALUNO Nº</div>';
+  h += '<div class="tx pq" style="left:6mm;top:' + (GEO.numY[0] + 1.5) + 'mm">dezena</div>';
+  h += '<div class="tx pq" style="left:6mm;top:' + (GEO.numY[1] + 1.5) + 'mm">unidade</div>';
+  var dig = op.numero != null ? String(op.numero).padStart(2, "0") : null;
+  for (d = 0; d < 2; d++)
+    for (v = 0; v < 10; v++) {
+      var pn = posNumero(d, v);
+      h += bolhaHTML(pn.x, pn.y, dig != null && +dig[d] === v, String(v));
+    }
+  h += bolhaHTML(GEO.gabX, GEO.gabY, !!op.gabarito, "");
+  h += '<div class="tx pq" style="left:' + (GEO.gabX - 8) + "mm;top:" + (GEO.gabY + 3) + 'mm">GABARITO</div>';
+
+  h += '<div class="tx nome" style="left:6mm;top:33mm">Nome: ' +
+    (op.nome ? "<b>" + op.nome + "</b>" : "____________________________________________") + "</div>";
+  h += '<div class="tx pq" style="left:6mm;top:39.5mm">Preencha um único círculo por questão, com caneta azul ou preta. Não dobre nem amasse os cantos pretos.</div>';
+
+  for (i = 0; i < cfg.questoes; i++) {
+    var col = Math.floor(i / GEO.qPorColuna), lin = i % GEO.qPorColuna;
+    var y = GEO.qY0 + lin * GEO.qDY;
+    h += '<div class="tx qn" style="left:' + GEO.qColX[col] + "mm;top:" + (y - 2) + 'mm">' + (i + 1) + "</div>";
+    for (var a = 0; a < cfg.alternativas; a++) {
+      var pq = posQuestao(i, a);
+      var marcar = op.respostas && op.respostas[i] === LETRAS[a];
+      h += bolhaHTML(pq.x, pq.y, marcar, LETRAS[a]);
+    }
+  }
+  h += "</div></div>";
+  return h;
+}
+
+function imprimir(html) {
+  var alvo = document.getElementById("impressao");
+  alvo.innerHTML = html;
+  try { window.print(); }
+  catch (e) { baixarHTML(html); }
+}
+function baixarHTML(corpo) {
+  var css = document.getElementById("estilo").innerHTML;
+  var doc = "<!DOCTYPE html><html><head><meta charset='utf-8'><title>Impressão</title><style>" + css +
+    "\n#impressao{display:block !important}</style></head><body><div id='impressao'>" + corpo + "</div></body></html>";
+  baixarArquivo("cartoes.html", doc, "text/html;charset=utf-8");
+}
+function baixarArquivo(nome, conteudo, tipo) {
+  var b = new Blob([conteudo], { type: tipo }), u = URL.createObjectURL(b);
+  var a = document.createElement("a"); a.href = u; a.download = nome; a.click();
+  setTimeout(function () { URL.revokeObjectURL(u); }, 4000);
+}
+
+/* ================= render ================= */
+var aba = "prova";
+function el(id) { return document.getElementById(id); }
+function esc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+function render() {
+  el("abas").innerHTML = [["prova", "Prova"], ["alunos", "Alunos"], ["corrigir", "Corrigir"], ["notas", "Notas"]]
+    .map(function (t) {
+      var n = t[0] === "corrigir" && S.provas.length ? " (" + S.provas.length + ")" : "";
+      return '<button class="tab' + (aba === t[0] ? " on" : "") + '" data-aba="' + t[0] + '">' + t[1] + n + "</button>";
+    }).join("");
+  el("conteudo").innerHTML = ({ prova: telaProva, alunos: telaAlunos, corrigir: telaCorrigir, notas: telaNotas })[aba]();
+  salvar();
+}
+
+/* ---- prova ---- */
+function telaProva() {
+  var c = S.cfg, h = '<div class="card">';
+  h += '<div class="grade2">' +
+    campo("Disciplina", '<input id="f_disc" value="' + esc(c.disciplina) + '" placeholder="Ex.: Química">') +
+    campo("Turma", '<input id="f_turma" value="' + esc(c.turma) + '" placeholder="Ex.: 301.I">') +
+    campo("Data", '<input id="f_data" type="date" value="' + c.data + '">') +
+    campo("Valor da prova", '<input id="f_valor" type="number" step="0.5" min="0" value="' + c.valor + '">') +
+    campo("Nº de questões", '<input id="f_q" type="number" min="1" max="75" value="' + c.questoes + '">') +
+    campo("Alternativas", '<select id="f_alt"><option value="4"' + (c.alternativas === 4 ? " selected" : "") +
+      ">A a D</option><option value=\"5\"" + (c.alternativas === 5 ? " selected" : "") + ">A a E</option></select>") +
+    "</div>";
+  h += '<p class="dica">Cada questão vale ' + num(valorQuestao()) + " ponto" + (valorQuestao() === 1 ? "" : "s") + ".</p>";
+
+  var faltam = c.gabarito.filter(function (g) { return !g; }).length;
+  h += '<div class="sep"><div class="linha"><strong>Gabarito</strong><span class="' + (faltam ? "aviso" : "ok") + '">' +
+    (faltam ? faltam + " sem resposta" : "completo") + "</span></div>";
+  h += '<div class="botoes2"><button class="b2" id="b_gabfoto">Ler gabarito por foto</button>' +
+       '<button class="b2" id="b_gabfolha">Imprimir folha do gabarito</button></div>';
+  h += '<p class="dica" id="gabmsg"></p>';
+  h += campo("Ou digitar a sequência", '<input id="f_seq" placeholder="ABCDEABCDE">');
+  h += '<div class="gab">';
+  for (var i = 0; i < c.questoes; i++) {
+    h += '<div class="glinha"><span class="gn">' + String(i + 1).padStart(2, "0") + "</span>";
+    for (var a = 0; a < c.alternativas; a++) {
+      var l = LETRAS[a];
+      h += '<button class="alt' + (c.gabarito[i] === l ? " on" : "") + '" data-gab="' + i + '" data-l="' + l + '">' + l + "</button>";
+    }
+    h += '<button class="anu' + (c.anuladas.indexOf(i) >= 0 ? " on" : "") + '" data-anu="' + i + '">⊘</button></div>';
+  }
+  h += '</div><p class="dica">⊘ anula a questão: conta como certa para todos.</p></div></div>';
+  return h;
+}
+function campo(r, ctrl) { return '<label class="campo"><span>' + r + "</span>" + ctrl + "</label>"; }
+
+/* ---- alunos ---- */
+function telaAlunos() {
+  var h = '<div class="card"><p class="dica">Cole a lista da turma, um nome por linha. Cada aluno ganha um número, e o cartão dele já sai impresso com esse número marcado — ninguém precisa preencher.</p>';
+  h += '<textarea id="f_lista" rows="6" placeholder="Ana Paula Ribeiro&#10;Bruno Alves&#10;Carla Souza">' +
+    esc(S.alunos.map(function (a) { return a.nome; }).join("\n")) + "</textarea>";
+  h += '<button class="b1" id="b_salvarlista">Salvar lista</button>';
+  if (S.alunos.length) {
+    h += '<div class="botoes2" style="margin-top:10px"><button class="b2" id="b_cartoes">Imprimir cartões da turma</button>' +
+         '<button class="b2" id="b_branco">Imprimir 5 cartões em branco</button></div>';
+    h += '<ul class="lista">' + S.alunos.map(function (a) {
+      return "<li><b>" + String(a.n).padStart(2, "0") + "</b> " + esc(a.nome) + "</li>";
+    }).join("") + "</ul>";
+  }
+  return h + "</div>";
+}
+
+/* ---- corrigir ---- */
+function telaCorrigir() {
+  var c = S.cfg, faltam = c.gabarito.filter(function (g) { return !g; }).length;
+  var h = '<div class="card">';
+  if (faltam) h += '<p class="alerta">Complete o gabarito na aba Prova para liberar a correção.</p>';
+  h += '<div class="botoes1"><button class="b1" id="b_cam"' + (faltam ? " disabled" : "") + ">Fotografar cartão</button>" +
+       '<button class="b2" id="b_gal"' + (faltam ? " disabled" : "") + ">Enviar fotos da galeria</button></div>";
+  h += '<p class="dica" id="statusfoto"></p></div>';
+
+  if (!S.provas.length) return h + '<p class="vazio">Nenhuma prova corrigida ainda.</p>';
+
+  S.provas.slice().reverse().forEach(function (p) {
+    var r = corrigir(p.respostas);
+    h += '<div class="card' + (p.revisar ? " atencao" : "") + '">';
+    h += '<div class="topo"><input class="nomein" data-nome="' + p.id + '" value="' + esc(p.nome) +
+      '" placeholder="Nome do aluno"><div class="nota"><b>' + num(r.nota) + "</b><span>" + r.acertos + "/" + c.questoes + "</span></div></div>";
+    if (p.revisar) h += '<p class="aviso pq">' + esc(p.revisar) + "</p>";
+    h += '<div class="chips">';
+    for (var i = 0; i < c.questoes; i++) {
+      var est = r.detalhe[i];
+      h += '<button class="chip ' + est + '" data-chip="' + p.id + '" data-i="' + i + '"><span>' + (i + 1) + "</span>" +
+        (p.respostas[i] || "-") + "</button>";
+    }
+    h += '</div><button class="rem" data-rem="' + p.id + '">Remover</button></div>';
+  });
+  return h;
+}
+
+/* ---- notas ---- */
+function telaNotas() {
+  var lista = S.provas.map(function (p) { var r = corrigir(p.respostas); return { nome: p.nome, acertos: r.acertos, nota: r.nota }; });
+  lista.sort(function (a, b) { return a.nome.localeCompare(b.nome, "pt"); });
+  var h = '<div class="card semp"><table><thead><tr><th>Aluno</th><th class="d">Acertos</th><th class="d">Nota</th></tr></thead><tbody>';
+  if (!lista.length) h += '<tr><td colspan="3" class="vazio">As notas aparecem aqui conforme você corrige.</td></tr>';
+  lista.forEach(function (a) {
+    h += "<tr><td>" + esc(a.nome || "—") + '</td><td class="d cinza">' + a.acertos + "/" + S.cfg.questoes +
+      '</td><td class="d"><b>' + num(a.nota) + "</b></td></tr>";
+  });
+  h += "</tbody></table></div>";
+  if (lista.length) {
+    var notas = lista.map(function (a) { return a.nota; });
+    var media = notas.reduce(function (s, n) { return s + n; }, 0) / notas.length;
+    h += '<div class="card stats">' +
+      stat("Alunos", lista.length) + stat("Média", num(media)) +
+      stat("Maior", num(Math.max.apply(null, notas))) + stat("Menor", num(Math.min.apply(null, notas))) + "</div>";
+    h += '<div class="botoes1"><button class="b1" id="b_planilha">Imprimir planilha / salvar PDF</button>' +
+         '<button class="b2" id="b_csv">Baixar CSV</button>' +
+         '<button class="b3" id="b_limpar">Limpar provas corrigidas</button></div>';
+  }
+  return h;
+}
+function stat(r, v) { return '<div class="stat"><b>' + v + "</b><span>" + r + "</span></div>"; }
+
+/* ================= ações ================= */
+function ajustarQuestoes(q) {
+  q = Math.max(1, Math.min(75, q || 1));
+  S.cfg.questoes = q;
+  S.cfg.gabarito = new Array(q).fill("").map(function (_, i) { return S.cfg.gabarito[i] || ""; });
+  S.cfg.anuladas = S.cfg.anuladas.filter(function (i) { return i < q; });
+  S.provas.forEach(function (p) {
+    p.respostas = new Array(q).fill("-").map(function (_, i) { return p.respostas[i] || "-"; });
+  });
+}
+
+function planilhaHTML() {
+  var lista = S.provas.map(function (p) { var r = corrigir(p.respostas); return { nome: p.nome, acertos: r.acertos, nota: r.nota }; });
+  lista.sort(function (a, b) { return a.nome.localeCompare(b.nome, "pt"); });
+  var notas = lista.map(function (a) { return a.nota; });
+  var media = notas.reduce(function (s, n) { return s + n; }, 0) / (notas.length || 1);
+  var h = '<div class="planilha"><h1>Planilha de notas</h1><p class="cab">' +
+    [S.cfg.disciplina, S.cfg.turma ? "Turma " + S.cfg.turma : "", S.cfg.data ? S.cfg.data.split("-").reverse().join("/") : "",
+     "Valor " + num(S.cfg.valor), S.cfg.questoes + " questões"].filter(Boolean).join(" &nbsp;·&nbsp; ") + "</p>";
+  h += "<table><thead><tr><th>Nº</th><th>Aluno</th><th>Acertos</th><th>Nota</th></tr></thead><tbody>";
+  lista.forEach(function (a, i) {
+    h += "<tr><td>" + (i + 1) + "</td><td>" + esc(a.nome) + "</td><td>" + a.acertos + "/" + S.cfg.questoes +
+      "</td><td><b>" + num(a.nota) + "</b></td></tr>";
+  });
+  h += "</tbody></table><p class='cab'>Alunos: " + lista.length + " &nbsp;·&nbsp; Média: " + num(media) +
+    " &nbsp;·&nbsp; Maior: " + num(Math.max.apply(null, notas)) + " &nbsp;·&nbsp; Menor: " + num(Math.min.apply(null, notas)) + "</p>";
+  h += "<p class='cab'>Gabarito — " + S.cfg.gabarito.map(function (g, i) {
+    return (i + 1) + (S.cfg.anuladas.indexOf(i) >= 0 ? "*" : "") + ":" + g;
+  }).join("  ") + (S.cfg.anuladas.length ? "  (* anulada)" : "") + "</p></div>";
+  return h;
+}
+
+async function processarFotos(files, modoGabarito) {
+  var lista = Array.prototype.slice.call(files || []);
+  if (!lista.length) return;
+  var status = el(modoGabarito ? "gabmsg" : "statusfoto");
+  for (var i = 0; i < lista.length; i++) {
+    if (status) status.textContent = "Lendo cartão " + (i + 1) + " de " + lista.length + "…";
+    var r;
+    try { r = await lerFoto(lista[i]); }
+    catch (e) { r = { ok: false, erro: "arquivo" }; }
+
+    if (!r.ok) {
+      if (modoGabarito) { render(); el("gabmsg").textContent = "Não achei as quatro marcas pretas dos cantos. Fotografe a folha inteira, sem cortar os cantos."; return; }
+      S.provas.push({ id: uid(), nome: "", respostas: new Array(S.cfg.questoes).fill("-"),
+        revisar: "Não achei as marcas dos cantos nesta foto. Preencha à mão ou refaça a foto." });
+      continue;
+    }
+    if (modoGabarito) {
+      S.cfg.gabarito = r.respostas.map(function (x) { return x === "-" ? "" : x; });
+      render();
+      el("gabmsg").textContent = r.duvidas
+        ? r.duvidas + " questão(ões) sem marcação clara. Confira na grade abaixo."
+        : "Gabarito lido. Confira antes de corrigir.";
+      return;
+    }
+    var aluno = S.alunos.filter(function (a) { return a.n === r.numero; })[0];
+    var motivo = "";
+    if (r.ehGabarito) motivo = "Esta folha está marcada como GABARITO. Confira se não é a chave de correção.";
+    else if (r.numero == null) motivo = "Não consegui ler o número do aluno. Escreva o nome à mão.";
+    else if (!aluno) motivo = "Número " + r.numero + " não está na lista da turma.";
+    else if (r.duvidas) motivo = r.duvidas + " questão(ões) em branco ou com marcação dupla.";
+    S.provas.push({
+      id: uid(),
+      nome: aluno ? aluno.nome : (r.numero != null ? "Nº " + String(r.numero).padStart(2, "0") : ""),
+      respostas: r.respostas, revisar: motivo,
+    });
+  }
+  render();
+}
+
+/* ================= eventos ================= */
+function ligar() {
+  document.addEventListener("click", function (ev) {
+    var t = ev.target.closest("button");
+    if (!t) return;
+    var id = t.id;
+
+    if (t.dataset.aba) { aba = t.dataset.aba; render(); return; }
+    if (t.dataset.gab != null) {
+      var i = +t.dataset.gab;
+      S.cfg.gabarito[i] = S.cfg.gabarito[i] === t.dataset.l ? "" : t.dataset.l;
+      render(); return;
+    }
+    if (t.dataset.anu != null) {
+      var k = +t.dataset.anu, p = S.cfg.anuladas.indexOf(k);
+      if (p >= 0) S.cfg.anuladas.splice(p, 1); else S.cfg.anuladas.push(k);
+      render(); return;
+    }
+    if (t.dataset.chip) {
+      var pr = S.provas.filter(function (x) { return x.id === t.dataset.chip; })[0];
+      var ciclo = LETRAS.slice(0, S.cfg.alternativas).split("").concat(["-"]);
+      var idx = +t.dataset.i;
+      pr.respostas[idx] = ciclo[(ciclo.indexOf(pr.respostas[idx]) + 1) % ciclo.length];
+      pr.revisar = "";
+      render(); return;
+    }
+    if (t.dataset.rem) {
+      S.provas = S.provas.filter(function (x) { return x.id !== t.dataset.rem; });
+      render(); return;
+    }
+
+    if (id === "b_gabfoto") el("in_gab").click();
+    if (id === "b_cam") el("in_cam").click();
+    if (id === "b_gal") el("in_gal").click();
+    if (id === "b_gabfolha") imprimir(folhaHTML({ gabarito: true, nome: "GABARITO — chave de correção" }));
+    if (id === "b_cartoes") imprimir(S.alunos.map(function (a) { return folhaHTML({ numero: a.n, nome: a.nome }); }).join(""));
+    if (id === "b_branco") imprimir([0, 0, 0, 0, 0].map(function () { return folhaHTML({}); }).join(""));
+    if (id === "b_planilha") imprimir(planilhaHTML());
+    if (id === "b_salvarlista") {
+      var nomes = el("f_lista").value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
+      S.alunos = nomes.map(function (n, i) { return { n: i + 1, nome: n }; });
+      render(); return;
+    }
+    if (id === "b_csv") {
+      var lista = S.provas.map(function (p) { var r = corrigir(p.respostas); return [p.nome, r.acertos, S.cfg.questoes, num(r.nota)]; });
+      lista.sort(function (a, b) { return String(a[0]).localeCompare(String(b[0]), "pt"); });
+      var csv = "\ufeff" + ["Aluno;Acertos;Total;Nota"].concat(lista.map(function (l) { return l.join(";"); })).join("\n");
+      baixarArquivo("notas.csv", csv, "text/csv;charset=utf-8");
+    }
+    if (id === "b_limpar" && confirm("Apagar todas as provas corrigidas?")) { S.provas = []; render(); }
+  });
+
+  document.addEventListener("change", function (ev) {
+    var t = ev.target, id = t.id;
+    if (id === "f_disc") S.cfg.disciplina = t.value;
+    if (id === "f_turma") S.cfg.turma = t.value;
+    if (id === "f_data") S.cfg.data = t.value;
+    if (id === "f_valor") S.cfg.valor = parseFloat(t.value) || 0;
+    if (id === "f_q") { ajustarQuestoes(parseInt(t.value, 10)); render(); return; }
+    if (id === "f_alt") { S.cfg.alternativas = parseInt(t.value, 10); render(); return; }
+    if (t.dataset.nome) {
+      var pr = S.provas.filter(function (x) { return x.id === t.dataset.nome; })[0];
+      if (pr) pr.nome = t.value;
+    }
+    if (id === "in_gab") { processarFotos(t.files, true); t.value = ""; }
+    if (id === "in_cam" || id === "in_gal") { processarFotos(t.files, false); t.value = ""; }
+    salvar();
+  });
+
+  document.addEventListener("input", function (ev) {
+    if (ev.target.id === "f_seq") {
+      var letras = ev.target.value.toUpperCase().replace(/[^A-E]/g, "").split("");
+      if (!letras.length) return;
+      var pos = ev.target.selectionStart;
+      S.cfg.gabarito = new Array(S.cfg.questoes).fill("").map(function (_, i) { return letras[i] || ""; });
+      render();
+      var novo = el("f_seq");
+      if (novo) { novo.value = letras.join(""); novo.focus(); novo.setSelectionRange(pos, pos); }
+    }
+  });
+}
+
+carregar();
+ligar();
+render();
+
+</script>
+<script>
+(function () {
+  if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
+    window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
+  }
+  var barra = document.getElementById("barrainstalar");
+  var botao = document.getElementById("b_instalar");
+  var evento = null;
+  var instalado = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    evento = e;
+    if (!instalado) barra.hidden = false;
+  });
+  botao.addEventListener("click", function () {
+    if (!evento) {
+      alert('No Chrome, toque nos tres pontinhos e escolha "Instalar app" ou "Adicionar a tela inicial".');
+      return;
+    }
+    evento.prompt();
+    evento.userChoice.then(function () { evento = null; barra.hidden = true; });
+  });
+  window.addEventListener("appinstalled", function () { barra.hidden = true; });
+})();
+</script>
+</body>
+</html>
